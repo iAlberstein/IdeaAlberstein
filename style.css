@@ -1,0 +1,97 @@
+
+.imginst {
+    background-color: #4179ae;
+    padding: 10px;
+    width: 100%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    background-color: #4179ae;
+    padding: 50px;
+}
+
+label, input, select, button {
+    margin-bottom: 10px;
+}
+
+
+
+body {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+#contenedor {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    align-items: center;
+
+}
+
+#filtrarInvitados {
+    height: 20px;
+    border: 1px solid;
+    border-radius: 5px;
+    width: 300px;
+    text-align: center;
+    margin-right: 10px;
+    height: 40px;
+}
+
+
+button {
+    display: inline-block;
+    background-color: #4179ae;
+    padding: 15px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: none;
+    color: aliceblue;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
+    
+}
+
+button:hover {
+    background-color: green;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+table {
+    border-collapse: collapse;
+    width: 800px;
+    margin-top: 30px;
+    border: 1;
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+th {
+    background-color: #2d669c;
+    color: white;
+    text-align: center;
+}
