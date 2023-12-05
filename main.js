@@ -8,14 +8,14 @@ Mostrar la lista de invitados que coincidan con la palabra clave ingresada
 Permitirle al usuario agregar un invitado en caso de no encontrarlo
 */
 
-// FUNCIÓN CONSTRUCTORA
-const Invitado = function (nombre, apellido, dni, procedencia, cargo) {
+// FUNCIÓN CONSTRUCTORA DE INVITADO
+const Invitado = function(nombre, apellido, dni, procedencia, cargo) {
     this.nombre = nombre
     this.apellido = apellido
     this.dni = dni
     this.procedencia = procedencia
     this.cargo = cargo
-};
+}
 
 // GENERACIÓN DE INVITADOS PREDEFINIDOS
 let invitado = new Invitado("Javier", "Milei", 21834641, "Libertad Avanza", "Presidente electo")
@@ -32,7 +32,6 @@ if (localStorage.getItem("invitados")) {
     lista = lista
 }
 
-
 //FUNCIÓN PARA LIMPIAR LA VISTA DEL INDEX.HTML
 function limpiarVista() {
     const contenedor = document.getElementById("contenedor")
@@ -41,10 +40,9 @@ function limpiarVista() {
     }
 }
 
-
 //FUNCIÓN PARA MOSTRAR LA TABLA CON LOS DATOS DEL LOCALSTORAGE
 function mostrarTabla(filtrarApellido = "") {
-    limpiarVista()
+    limpiarVista();
 
     const contenedor = document.getElementById("contenedor")
 
@@ -57,17 +55,16 @@ function mostrarTabla(filtrarApellido = "") {
     const filtrarBtn = document.createElement("button")
     filtrarBtn.id = "filtrarInv"
     filtrarBtn.textContent = "Filtrar"
-    filtrarBtn.addEventListener("click", function () {
+    filtrarBtn.addEventListener("click", function() {
         const input = document.getElementById("filtrarInvitados").value
         mostrarTabla(input.trim().toUpperCase())
     })
     contenedor.appendChild(filtrarBtn)
 
-
     const limpiarBtn = document.createElement("button")
     limpiarBtn.id = "limpiarBtn"
     limpiarBtn.textContent = "Limpiar Filtro"
-    limpiarBtn.addEventListener("click", function () {
+    limpiarBtn.addEventListener("click", function() {
         limpiarFiltro()
     })
     contenedor.appendChild(limpiarBtn)
@@ -78,9 +75,7 @@ function mostrarTabla(filtrarApellido = "") {
     agregarBtn.addEventListener("click", agregarInvitado)
     contenedor.appendChild(agregarBtn)
 
-
     const tabla = document.createElement("table")
-
 
     const encabezados = document.createElement("tr");
     ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo"].forEach((titulo) => {
@@ -93,10 +88,8 @@ function mostrarTabla(filtrarApellido = "") {
     // FILTRADO DE LISTA POR APELLIDO
     const listaFiltrada = filtrarApellido ? lista.filter((invitado) => invitado.apellido.toUpperCase().includes(filtrarApellido)) : lista
 
-
     listaFiltrada.forEach((invitado) => {
         const fila = document.createElement("tr");
-
 
         ["apellido", "nombre", "dni", "procedencia", "cargo"].forEach((propiedad) => {
             const celda = document.createElement("td")
@@ -110,14 +103,13 @@ function mostrarTabla(filtrarApellido = "") {
     contenedor.appendChild(tabla)
 }
 
-
-//FUNCIÓN PARA AGREGAR UN NUEVO INVITADO
+// FUNCIÓN PARA AGREGAR UN NUEVO INVITADO
 function agregarInvitado() {
     limpiarVista()
 
     const contenedor = document.getElementById("contenedor")
 
-    //FORMULARIO PARA AGREGAR UN NUEVO INVITADO
+     //FORMULARIO PARA AGREGAR UN NUEVO INVITADO
     const form = document.createElement("form")
     form.innerHTML = `
         <h2>AGREGAR INVITADO</h2>
@@ -147,7 +139,7 @@ function agregarInvitado() {
         <button type="submit">Agregar</button>
     `;
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", function(e) {
         e.preventDefault()
 
         const nombreInput = document.getElementById("nombre-input").value.trim()
@@ -157,21 +149,35 @@ function agregarInvitado() {
         const cargoInput = document.getElementById("cargo-input").value.trim()
 
         if (isNaN(dniInput) || nombreInput === "" || apellidoInput === "") {
-            alert("Ingresá valores válidos")
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ingresá valores válidos',
+            });
             return
         }
 
         const invitado = new Invitado(nombreInput, apellidoInput, dniInput, procedenciaInput, cargoInput)
 
+        // INCORPORACIÓN DE WEETALERTS
         if (lista.some((elemento) => elemento.dni === invitado.dni)) {
-            alert("El invitado ya se encontraba cargado en la lista.")
+            Swal.fire({
+                icon: 'warning',
+                title: 'Advertencia',
+                text: 'El invitado ya se encontraba cargado en la lista.',
+            });
             return
         }
 
         lista.push(invitado)
 
         localStorage.setItem("invitados", JSON.stringify(lista))
-        alert(`Se agregó el invitado ${invitado.nombre} ${invitado.apellido} correctamente`)
+        //INCORPORACIÓN DE SWEETALERTS
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: `Se agregó el invitado ${invitado.nombre} ${invitado.apellido} correctamente`,
+        })
 
         mostrarTabla()
     })
@@ -179,6 +185,7 @@ function agregarInvitado() {
     contenedor.appendChild(form)
 }
 
+// FUNCIÓN PARA LIMPIAR EL FILTRO EN LA TABLA DE INVITADOS
 function limpiarFiltro() {
     document.getElementById("filtrarInvitados").value = ""
     mostrarTabla()
@@ -191,4 +198,3 @@ contenedor.id = "contenedor"
 body.appendChild(contenedor)
 
 mostrarTabla()
-
