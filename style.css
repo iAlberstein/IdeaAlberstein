@@ -9,12 +9,20 @@ form {
     display: flex;
     flex-direction: column;
     width: 200px;
-    background-color: #4179ae;
+    background-color: #a6c0d7;
     padding: 50px;
+    border-radius: 10PX;
 }
 
 label, input, select, button {
     margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+
+}
+
+label, input, select {
+    height: 20px;
 }
 
 
