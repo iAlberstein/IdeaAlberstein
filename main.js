@@ -137,7 +137,7 @@ function agregarInvitado() {
         <input id="cargo-input" type="text"><br>
 
         <button type="submit">Agregar</button>
-    `;
+    `
 
     form.addEventListener("submit", function(e) {
         e.preventDefault()
