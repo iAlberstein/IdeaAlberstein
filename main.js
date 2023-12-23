@@ -9,18 +9,19 @@ Permitirle al usuario agregar un invitado en caso de no encontrarlo
 */
 
 // FUNCIÓN CONSTRUCTORA DE INVITADO
-const Invitado = function(nombre, apellido, dni, procedencia, cargo) {
+const Invitado = function(nombre, apellido, dni, procedencia, cargo, mail) {
     this.nombre = nombre
     this.apellido = apellido
     this.dni = dni
     this.procedencia = procedencia
     this.cargo = cargo
+    this.mail = mail
 }
 
 // GENERACIÓN DE INVITADOS PREDEFINIDOS
-let invitado = new Invitado("Javier", "Milei", 21834641, "Libertad Avanza", "Presidente electo")
-let invitado2 = new Invitado("Victoria", "Villaruel", 20954786, "Libertad Avanza", "Vicepresidente electa")
-let invitado3 = new Invitado("Patricia", "Bullrich", 11988336, "MINISTROS", "Ministra de Seguridad")
+let invitado = new Invitado("Javier", "Milei", 21834641, "Libertad Avanza", "Presidente electo", "mailjavier@dominio.com")
+let invitado2 = new Invitado("Victoria", "Villarruel", 20954786, "Libertad Avanza", "Vicepresidente electa", "mailvictoria@dominio.com")
+let invitado3 = new Invitado("Patricia", "Bullrich", 11988336, "MINISTROS", "Ministra de Seguridad", "mailpatricia@dominio.com")
 
 // LISTA DE INVITADOS CARGADOS
 let lista = [invitado, invitado2, invitado3]
@@ -78,7 +79,7 @@ function mostrarTabla(filtrarApellido = "") {
     const tabla = document.createElement("table")
 
     const encabezados = document.createElement("tr");
-    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo"].forEach((titulo) => {
+    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo", "Mail"].forEach((titulo) => {
         const th = document.createElement("th")
         th.textContent = titulo
         encabezados.appendChild(th)
@@ -91,7 +92,7 @@ function mostrarTabla(filtrarApellido = "") {
     listaFiltrada.forEach((invitado) => {
         const fila = document.createElement("tr");
 
-        ["apellido", "nombre", "dni", "procedencia", "cargo"].forEach((propiedad) => {
+        ["apellido", "nombre", "dni", "procedencia", "cargo", "mail"].forEach((propiedad) => {
             const celda = document.createElement("td")
             celda.textContent = invitado[propiedad]
             fila.appendChild(celda)
@@ -136,6 +137,9 @@ function agregarInvitado() {
         <label for="cargo-input">Cargo:</label>
         <input id="cargo-input" type="text"><br>
 
+        <label for="mail-input">Mail:</label>
+        <input id="mail-input" type="mail" required><br>
+
         <button type="submit">Agregar</button>
     `
 
@@ -147,6 +151,7 @@ function agregarInvitado() {
         const dniInput = parseInt(document.getElementById("dni-input").value)
         const procedenciaInput = document.getElementById("procedencia-input").value
         const cargoInput = document.getElementById("cargo-input").value.trim()
+        const mailInput = document.getElementById("mail-input").value.trim()
 
         if (isNaN(dniInput) || nombreInput === "" || apellidoInput === "") {
             Swal.fire({
@@ -157,7 +162,7 @@ function agregarInvitado() {
             return
         }
 
-        const invitado = new Invitado(nombreInput, apellidoInput, dniInput, procedenciaInput, cargoInput)
+        const invitado = new Invitado(nombreInput, apellidoInput, dniInput, procedenciaInput, cargoInput, mailInput)
 
         // INCORPORACIÓN DE WEETALERTS
         if (lista.some((elemento) => elemento.dni === invitado.dni)) {
