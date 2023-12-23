@@ -16,7 +16,7 @@ const Invitado = function(nombre, apellido, dni, procedencia, cargo, mail) {
     this.procedencia = procedencia
     this.cargo = cargo
     this.mail = mail
-}
+};
 
 // GENERACIÓN DE INVITADOS PREDEFINIDOS
 let invitado = new Invitado("Javier", "Milei", 21834641, "Libertad Avanza", "Presidente electo", "mailjavier@dominio.com")
@@ -43,8 +43,7 @@ if (localStorage.getItem("invitadosCargados")) {
     listaInvitadosEnviados = listaInvitadosEnviados
 }
 
-
-//FUNCIÓN PARA LIMPIAR LA VISTA DEL INDEX.HTML
+// FUNCIÓN PARA LIMPIAR LA VISTA DEL INDEX.HTML
 function limpiarVista() {
     const contenedor = document.getElementById("contenedor")
     while (contenedor.firstChild) {
@@ -52,9 +51,9 @@ function limpiarVista() {
     }
 }
 
-//FUNCIÓN PARA MOSTRAR LA TABLA CON LOS DATOS DEL LOCALSTORAGE
+// FUNCIÓN PARA MOSTRAR LA TABLA CON LOS DATOS DEL LOCALSTORAGE
 function mostrarTabla(filtrarApellido = "") {
-    limpiarVista();
+    limpiarVista()
 
     const contenedor = document.getElementById("contenedor")
 
@@ -70,7 +69,7 @@ function mostrarTabla(filtrarApellido = "") {
     filtrarBtn.addEventListener("click", function() {
         const input = document.getElementById("filtrarInvitados").value
         mostrarTabla(input.trim().toUpperCase())
-    })
+    });
     contenedor.appendChild(filtrarBtn)
 
     const limpiarBtn = document.createElement("button")
@@ -78,7 +77,7 @@ function mostrarTabla(filtrarApellido = "") {
     limpiarBtn.textContent = "Limpiar Filtro"
     limpiarBtn.addEventListener("click", function() {
         limpiarFiltro()
-    })
+    });
     contenedor.appendChild(limpiarBtn)
 
     const agregarBtn = document.createElement("button")
@@ -87,7 +86,13 @@ function mostrarTabla(filtrarApellido = "") {
     agregarBtn.addEventListener("click", agregarInvitado)
     contenedor.appendChild(agregarBtn)
 
-    //NUEVO BOTON PARA SUMAR INVITADOS A LA NUEVA LISTA
+    const enviarInvitacionesBtn = document.createElement("button")
+    enviarInvitacionesBtn.id = "enviarInvitacionesBtn"
+    enviarInvitacionesBtn.textContent = "Enviar Invitaciones"
+    enviarInvitacionesBtn.addEventListener("click", enviarInvitaciones)
+    contenedor.appendChild(enviarInvitacionesBtn)
+
+    // NUEVO BOTON PARA SUMAR INVITADOS A LA NUEVA LISTA
     const invitacionesEnviadasBtn = document.createElement("button")
     invitacionesEnviadasBtn.id = "invitacionesEnviadasBtn"
     invitacionesEnviadasBtn.textContent = "Ver Invitaciones enviadas"
@@ -97,15 +102,171 @@ function mostrarTabla(filtrarApellido = "") {
     const tabla = document.createElement("table")
 
     const encabezados = document.createElement("tr");
-    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo", "Mail"].forEach((titulo) => {
+    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo", "Mail", "Enviar"].forEach((titulo) => {
         const th = document.createElement("th")
         th.textContent = titulo
         encabezados.appendChild(th)
-    })
+    });
     tabla.appendChild(encabezados)
 
     // FILTRADO DE LISTA POR APELLIDO
     const listaFiltrada = filtrarApellido ? lista.filter((invitado) => invitado.apellido.toUpperCase().includes(filtrarApellido)) : lista
+
+    listaFiltrada.forEach((invitado) => {
+        const fila = document.createElement("tr");
+
+        ["apellido", "nombre", "dni", "procedencia", "cargo", "mail"].forEach((propiedad) => {
+            const celda = document.createElement("td")
+            celda.textContent = invitado[propiedad]
+            fila.appendChild(celda)
+        });
+
+        // Agregar columna con checkbox
+        const checkboxCell = document.createElement("td")
+        const checkbox = document.createElement("input")
+        checkbox.type = "checkbox"
+        checkboxCell.appendChild(checkbox)
+        fila.appendChild(checkboxCell)
+
+        tabla.appendChild(fila)
+    });
+
+    contenedor.appendChild(tabla)
+}
+
+// FUNCIÓN PARA ENVIAR INVITACIONES
+function enviarInvitaciones() {
+    const checkboxes = document.querySelectorAll("input[type=checkbox]")
+    const invitadosSeleccionados = []
+
+    checkboxes.forEach((checkbox, index) => {
+        if (checkbox.checked) {
+            invitadosSeleccionados.push(lista[index])
+        }
+    })
+
+    listaInvitadosEnviados = listaInvitadosEnviados.concat(invitadosSeleccionados)
+
+    // ACÁ SUCEDERÍA UNA MAGIA NEGRA, DIGO... PROGRAMACIÓN, QUE ENVIARÍA LOS MAILS
+
+    lista = lista.filter((_, index) => !checkboxes[index].checked)
+
+    localStorage.setItem("invitados", JSON.stringify(lista))
+    localStorage.setItem("invitadosCargados", JSON.stringify(listaInvitadosEnviados))
+
+    mostrarTabla()
+}
+
+// FUNCIÓN PARA VER LISTA DE INVITADOS CARGADOS
+function invitadosCargados() {
+    limpiarVista()
+
+    const contenedor = document.getElementById("contenedor")
+
+    const tabla = document.createElement("table")
+
+    const encabezados = document.createElement("tr");
+    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo", "Mail"].forEach((titulo) => {
+        const th = document.createElement("th")
+        th.textContent = titulo
+        encabezados.appendChild(th)
+    });
+    tabla.appendChild(encabezados)
+
+    const filtrarInput = document.createElement("input")
+    filtrarInput.id = "filtrarInvitadosEnviados"
+    filtrarInput.placeholder = "Filtrar por apellido"
+    contenedor.appendChild(filtrarInput)
+
+    const filtrarBtn = document.createElement("button")
+    filtrarBtn.id = "filtrarInvitadosEnviadosBtn"
+    filtrarBtn.textContent = "Filtrar"
+    filtrarBtn.addEventListener("click", function() {
+        const input = document.getElementById("filtrarInvitadosEnviados").value
+        mostrarTablaInvitadosEnviados(input.trim().toUpperCase())
+    });
+    contenedor.appendChild(filtrarBtn)
+
+    const limpiarBtn = document.createElement("button")
+    limpiarBtn.id = "limpiarFiltroInvitadosEnviadosBtn"
+    limpiarBtn.textContent = "Limpiar Filtro"
+    limpiarBtn.addEventListener("click", function() {
+        limpiarFiltroInvitadosEnviados()
+    });
+    contenedor.appendChild(limpiarBtn)
+
+    const volverBtn = document.createElement("button")
+    volverBtn.id = "volverBtn"
+    volverBtn.textContent = "Volver al Inicio"
+    volverBtn.addEventListener("click", function() {
+        mostrarTabla()
+    });
+    contenedor.appendChild(volverBtn)
+
+    listaInvitadosEnviados.forEach((invitado) => {
+        const fila = document.createElement("tr");
+
+        ["apellido", "nombre", "dni", "procedencia", "cargo", "mail"].forEach((propiedad) => {
+            const celda = document.createElement("td")
+            celda.textContent = invitado[propiedad]
+            fila.appendChild(celda)
+        });
+
+        tabla.appendChild(fila)
+    });
+
+    contenedor.appendChild(tabla)
+}
+
+// FUNCIÓN PARA MOSTRAR LA TABLA DE INVITADOS ENVIADOS CON FILTRO POR APELLIDO
+function mostrarTablaInvitadosEnviados(filtrarApellido = "") {
+    limpiarVista()
+
+    const contenedor = document.getElementById("contenedor")
+
+    const filtrarInput = document.createElement("input")
+    filtrarInput.id = "filtrarInvitadosEnviados"
+    filtrarInput.placeholder = "Filtrar por apellido"
+    filtrarInput.value = filtrarApellido
+    contenedor.appendChild(filtrarInput)
+
+    const filtrarBtn = document.createElement("button")
+    filtrarBtn.id = "filtrarInvitadosEnviadosBtn"
+    filtrarBtn.textContent = "Filtrar"
+    filtrarBtn.addEventListener("click", function() {
+        const input = document.getElementById("filtrarInvitadosEnviados").value
+        mostrarTablaInvitadosEnviados(input.trim().toUpperCase())
+    })
+    contenedor.appendChild(filtrarBtn)
+
+    const limpiarBtn = document.createElement("button")
+    limpiarBtn.id = "limpiarFiltroInvitadosEnviadosBtn"
+    limpiarBtn.textContent = "Limpiar Filtro"
+    limpiarBtn.addEventListener("click", function() {
+        limpiarFiltroInvitadosEnviados()
+    });
+    contenedor.appendChild(limpiarBtn)
+
+    const volverBtn = document.createElement("button")
+    volverBtn.id = "volverBtn"
+    volverBtn.textContent = "Volver al Inicio"
+    volverBtn.addEventListener("click", function() {
+        mostrarTabla()
+    });
+    contenedor.appendChild(volverBtn)
+
+    const tabla = document.createElement("table")
+
+    const encabezados = document.createElement("tr");
+    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo", "Mail"].forEach((titulo) => {
+        const th = document.createElement("th")
+        th.textContent = titulo
+        encabezados.appendChild(th)
+    });
+    tabla.appendChild(encabezados)
+
+    // FILTRADO DE LISTA POR APELLIDO
+    const listaFiltrada = filtrarApellido ? listaInvitadosEnviados.filter((invitado) => invitado.apellido.toUpperCase().includes(filtrarApellido)) : listaInvitadosEnviados
 
     listaFiltrada.forEach((invitado) => {
         const fila = document.createElement("tr");
@@ -122,38 +283,11 @@ function mostrarTabla(filtrarApellido = "") {
     contenedor.appendChild(tabla)
 }
 
-
-// FUNCIÓN PARA VER LISTA DE INVITADOS CARGADOS
-function invitadosCargados() {
-    limpiarVista()
-
-    const contenedor = document.getElementById("contenedor")
-
-    const tabla = document.createElement("table")
-
-    const encabezados = document.createElement("tr");
-    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo", "Mail"].forEach((titulo) => {
-        const th = document.createElement("th")
-        th.textContent = titulo
-        encabezados.appendChild(th)
-    })
-    tabla.appendChild(encabezados)
-
-    listaInvitadosEnviados.forEach((invitado) => {
-        const fila = document.createElement("tr");
-
-        ["apellido", "nombre", "dni", "procedencia", "cargo", "mail"].forEach((propiedad) => {
-            const celda = document.createElement("td")
-            celda.textContent = invitado[propiedad]
-            fila.appendChild(celda)
-        })
-
-        tabla.appendChild(fila)
-    })
-
-    contenedor.appendChild(tabla)
+// FUNCIÓN PARA LIMPIAR EL FILTRO EN LA TABLA DE INVITADOS ENVIADOS
+function limpiarFiltroInvitadosEnviados() {
+    document.getElementById("filtrarInvitadosEnviados").value = ""
+    mostrarTablaInvitadosEnviados()
 }
-
 
 // FUNCIÓN PARA AGREGAR UN NUEVO INVITADO
 function agregarInvitado() {
@@ -161,7 +295,7 @@ function agregarInvitado() {
 
     const contenedor = document.getElementById("contenedor")
 
-     //FORMULARIO PARA AGREGAR UN NUEVO INVITADO
+    // FORMULARIO PARA AGREGAR UN NUEVO INVITADO
     const form = document.createElement("form")
     form.innerHTML = `
         <h2>AGREGAR INVITADO</h2>
@@ -192,7 +326,7 @@ function agregarInvitado() {
         <input id="mail-input" type="mail" required><br>
 
         <button type="submit">Agregar</button>
-    `
+    `;
 
     form.addEventListener("submit", function(e) {
         e.preventDefault()
@@ -209,7 +343,7 @@ function agregarInvitado() {
                 icon: 'error',
                 title: 'Error',
                 text: 'Ingresá valores válidos',
-            });
+            })
             return
         }
 
@@ -228,7 +362,7 @@ function agregarInvitado() {
         lista.push(invitado)
 
         localStorage.setItem("invitados", JSON.stringify(lista))
-        //INCORPORACIÓN DE SWEETALERTS
+        // INCORPORACIÓN DE SWEETALERTS
         Swal.fire({
             icon: 'success',
             title: 'Éxito',
@@ -254,3 +388,22 @@ contenedor.id = "contenedor"
 body.appendChild(contenedor)
 
 mostrarTabla()
+
+function obtenerDatosClima(latitud, longitud) {
+    const apiKey = '4d14d25691a0f3a9408924d99b71677a'
+    const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitud}&lon=${longitud}&appid=${apiKey}&units=metric`
+  
+    fetch(weatherApiUrl)
+        .then((response) => response.json()) 
+        .then(data => {
+          const temperaturaElemento = document.getElementById("temperatura")
+          temperaturaElemento.textContent = `Temperatura actual en CABA: ${data.main.temp} °C`
+        })    
+    .catch(error => {console.error("Error en la URL de la API:")
+    })   
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    obtenerDatosClima(-34.60, -58.39)
+  })
+
+ 
