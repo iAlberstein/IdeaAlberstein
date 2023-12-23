@@ -8,10 +8,15 @@
 form {
     display: flex;
     flex-direction: column;
+    align-items: center;
     width: 400px;
     background-color: #a6c0d7;
     padding: 50px;
     border-radius: 10PX;
+
+}
+form input {
+    width: 300px;
 }
 
 label, input, select, button {
@@ -48,7 +53,7 @@ body {
 
 }
 
-#filtrarInvitados {
+#filtrarInvitados, #filtrarInvitadosEnviados {
     height: 20px;
     border: 1px solid;
     border-radius: 5px;
