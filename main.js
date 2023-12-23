@@ -6,6 +6,7 @@ Crear estructura de la base de datos: nombre, apellido, dni, procedencia, cargo
 Permitirle al usuario buscar por palabra clave si el invitado/a ya fue agregado
 Mostrar la lista de invitados que coincidan con la palabra clave ingresada
 Permitirle al usuario agregar un invitado en caso de no encontrarlo
+El usuario podrá seleccionar a qué invitados enviarles un mail y los mismos podrán verse en un nuevo listado, siendo quitados de la lista original
 */
 
 // FUNCIÓN CONSTRUCTORA DE INVITADO
@@ -361,6 +362,7 @@ function agregarInvitado() {
         lista.push(invitado)
 
         localStorage.setItem("invitados", JSON.stringify(lista))
+        //SETINTERVAL PARA VISUALIZAR EL TIEMPO EN EL CONSOLE.LOG
         let counter = 0
         const interval = setInterval (() => {
             counter++
@@ -399,10 +401,13 @@ body.appendChild(contenedor)
 
 mostrarTabla()
 
+
+//CONSUMO DE API
 function obtenerDatosClima(latitud, longitud) {
     const apiKey = '4d14d25691a0f3a9408924d99b71677a'
     const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitud}&lon=${longitud}&appid=${apiKey}&units=metric`
-  
+    
+    //PROMESAS
     fetch(weatherApiUrl)
         .then((response) => response.json()) 
         .then(data => {
