@@ -26,12 +26,23 @@ let invitado3 = new Invitado("Patricia", "Bullrich", 11988336, "MINISTROS", "Min
 // LISTA DE INVITADOS CARGADOS
 let lista = [invitado, invitado2, invitado3]
 
+let invitadoCargadoBase = new Invitado("Nicolás", "Caputo", 11948336, "MINISTROS", "Ministro de Economía", "mailnicolas@dominio.com")
+
+let listaInvitadosEnviados = [invitadoCargadoBase]
+
 // LOCALSTORAGE
 if (localStorage.getItem("invitados")) {
     lista = JSON.parse(localStorage.getItem("invitados"))
 } else {
     lista = lista
 }
+
+if (localStorage.getItem("invitadosCargados")) {
+    listaInvitadosEnviados = JSON.parse(localStorage.getItem("invitadosCargados"))
+} else {
+    listaInvitadosEnviados = listaInvitadosEnviados
+}
+
 
 //FUNCIÓN PARA LIMPIAR LA VISTA DEL INDEX.HTML
 function limpiarVista() {
@@ -76,6 +87,13 @@ function mostrarTabla(filtrarApellido = "") {
     agregarBtn.addEventListener("click", agregarInvitado)
     contenedor.appendChild(agregarBtn)
 
+    //NUEVO BOTON PARA SUMAR INVITADOS A LA NUEVA LISTA
+    const invitacionesEnviadasBtn = document.createElement("button")
+    invitacionesEnviadasBtn.id = "invitacionesEnviadasBtn"
+    invitacionesEnviadasBtn.textContent = "Ver Invitaciones enviadas"
+    invitacionesEnviadasBtn.addEventListener("click", invitadosCargados)
+    contenedor.appendChild(invitacionesEnviadasBtn)
+
     const tabla = document.createElement("table")
 
     const encabezados = document.createElement("tr");
@@ -103,6 +121,39 @@ function mostrarTabla(filtrarApellido = "") {
 
     contenedor.appendChild(tabla)
 }
+
+
+// FUNCIÓN PARA VER LISTA DE INVITADOS CARGADOS
+function invitadosCargados() {
+    limpiarVista()
+
+    const contenedor = document.getElementById("contenedor")
+
+    const tabla = document.createElement("table")
+
+    const encabezados = document.createElement("tr");
+    ["Apellido", "Nombre", "DNI", "Procedencia", "Cargo", "Mail"].forEach((titulo) => {
+        const th = document.createElement("th")
+        th.textContent = titulo
+        encabezados.appendChild(th)
+    })
+    tabla.appendChild(encabezados)
+
+    listaInvitadosEnviados.forEach((invitado) => {
+        const fila = document.createElement("tr");
+
+        ["apellido", "nombre", "dni", "procedencia", "cargo", "mail"].forEach((propiedad) => {
+            const celda = document.createElement("td")
+            celda.textContent = invitado[propiedad]
+            fila.appendChild(celda)
+        })
+
+        tabla.appendChild(fila)
+    })
+
+    contenedor.appendChild(tabla)
+}
+
 
 // FUNCIÓN PARA AGREGAR UN NUEVO INVITADO
 function agregarInvitado() {
