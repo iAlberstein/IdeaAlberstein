@@ -121,7 +121,6 @@ function mostrarTabla(filtrarApellido = "") {
             fila.appendChild(celda)
         });
 
-        // Agregar columna con checkbox
         const checkboxCell = document.createElement("td")
         const checkbox = document.createElement("input")
         checkbox.type = "checkbox"
@@ -349,7 +348,7 @@ function agregarInvitado() {
 
         const invitado = new Invitado(nombreInput, apellidoInput, dniInput, procedenciaInput, cargoInput, mailInput)
 
-        // INCORPORACIÓN DE WEETALERTS
+        // INCORPORACIÓN DE SWEETALERTS
         if (lista.some((elemento) => elemento.dni === invitado.dni)) {
             Swal.fire({
                 icon: 'warning',
@@ -362,11 +361,22 @@ function agregarInvitado() {
         lista.push(invitado)
 
         localStorage.setItem("invitados", JSON.stringify(lista))
-        // INCORPORACIÓN DE SWEETALERTS
+        let counter = 0
+        const interval = setInterval (() => {
+            counter++
+            console.log("Counter: ", counter)
+
+            if (counter >= 5) {
+                clearInterval(interval)
+                console.log("Finalizó el SweetAlert")
+            }
+        }, 1000)
+        
         Swal.fire({
             icon: 'success',
             title: 'Éxito',
-            text: `Se agregó el invitado ${invitado.nombre} ${invitado.apellido} correctamente`,
+            text: `Se agregó el invitado ${invitado.nombre} ${invitado.apellido} correctamente. Esta ventana se cerrará en 5 segundos`,
+            timer: 5000
         })
 
         mostrarTabla()
